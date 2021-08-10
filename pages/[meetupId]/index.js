@@ -25,10 +25,10 @@ function MeetupDetails(props) {
 }
 
 export async function getStaticPaths() {
-    const client = await MongoClient.connect(
-        'mongodb+srv://huy:oOZ1lvcBt49zkUMP@cluster0.fgnj6.mongodb.net/meetups?retryWrites=true&w=majority',
-        { useNewUrlParser: true, useUnifiedTopology: true }
-    );
+    const client = await MongoClient.connect(process.env.MONGODB_CONN, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
 
     const db = client.db();
 
@@ -39,7 +39,10 @@ export async function getStaticPaths() {
     client.close();
 
     return {
-        fallback: false, //false will support only meetupId list in paths, true will try to fetch all meetupId
+        fallback: 'blocking', //false will support only meetupId list in paths, will return 404 page if not match paths list
+        //true will try to fetch all meetupsId, helpful when adding new meetup, will return blank page if not match paths list
+        // 'blocking' like true, but will wait till new meetups id registered to cache of server deployed to fetch a new page
+
         paths: meetupsId.map((item) => ({
             params: {
                 meetupId: item._id.toString(),
@@ -49,10 +52,10 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-    const client = await MongoClient.connect(
-        'mongodb+srv://huy:oOZ1lvcBt49zkUMP@cluster0.fgnj6.mongodb.net/meetups?retryWrites=true&w=majority',
-        { useNewUrlParser: true, useUnifiedTopology: true }
-    );
+    const client = await MongoClient.connect(process.env.MONGODB_CONN, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
 
     const db = client.db();
 

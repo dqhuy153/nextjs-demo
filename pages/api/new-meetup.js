@@ -9,10 +9,10 @@ async function handler(req, res) {
 
         const { title, image, address, description } = data;
 
-        const client = await MongoClient.connect(
-            'mongodb+srv://huy:oOZ1lvcBt49zkUMP@cluster0.fgnj6.mongodb.net/meetups?retryWrites=true&w=majority',
-            { useNewUrlParser: true, useUnifiedTopology: true }
-        );
+        const client = await MongoClient.connect(process.env.MONGODB_CONN, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
 
         const db = client.db();
 
